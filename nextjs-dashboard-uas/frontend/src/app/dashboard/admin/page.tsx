@@ -8,11 +8,18 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
 type Product = {
-  id?: number;
+  id: number;
   nama_produk: string;
   harga_satuan: number;
   quantity: number;
 };
+
+type ProductInput = {
+  nama_produk: string;
+  harga_satuan: number;
+  quantity: number;
+};
+
 
 export default function AdminDashboard() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -64,12 +71,8 @@ export default function AdminDashboard() {
     setEditProduct(null);
   }
 
-  // --- Statistik dashboard (PASTI BENAR) ---
-  // Pastikan quantity berupa number
-  const productsFixed = products.map(p => ({
-    ...p,
-    quantity: Number(p.quantity),
-  }));
+  const productsFixed = products.map(p => ({ ...p, quantity: Number(p.quantity) }));
+
 
   const totalProduk = productsFixed.length;
   const quantities = productsFixed.map((p) => p.quantity);
@@ -150,8 +153,8 @@ export default function AdminDashboard() {
         </button>
         {showForm && (
           <ProductForm
-            product={editProduct}
-            onSubmit={handleFormSubmit}
+            product={editProduct ?? undefined}
+            onSubmit={(data) => handleFormSubmit({ ...data, id: editProduct?.id ?? 0 })}
             onCancel={handleCancel}
           />
         )}
@@ -165,3 +168,4 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
